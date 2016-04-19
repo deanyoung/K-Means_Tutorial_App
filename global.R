@@ -1,5 +1,6 @@
 library(dplyr)
 library(ggplot2)
+library(shiny)
 
 df.check <- function(df){
   
@@ -28,8 +29,8 @@ km.init <- function(df,k,seed=76){
   
   set.seed(seed)
   df.mod <- df %>% mutate(cluster=as.factor(
-                                          sample(samp.vec,nrow(df),replace=TRUE)
-                                          ))
+    sample(samp.vec,nrow(df),replace=TRUE)
+  ))
   
   return(df.mod)
   
@@ -39,7 +40,7 @@ km.init <- function(df,k,seed=76){
 km.ggplot <- function(df, xlab, ylab, reg.size=5){
   
   p <- ggplot(data=df, aes(x=x1,y=x2,col=cluster)) + geom_point(size=reg.size) +
-        xlab(xlab) + ylab(ylab)
+    xlab(xlab) + ylab(ylab)
   
   return(p)
   
@@ -49,7 +50,7 @@ km.centroid <- function(df){
   
   
   centroid <- df %>% group_by(cluster) %>% summarise(x1.c = mean(x1), x2.c = mean(x2))
-
+  
   return(centroid)
 }
 
@@ -110,7 +111,7 @@ km.iterate <- function(df, k){
   prev.cluster <- c()
   
   while (isTRUE(all.equal(prev.cluster,df$cluster)) == FALSE){
-  
+    
     prev.cluster <- df$cluster # store previous cluster
     
     centroid <- km.centroid(df) # compute centroid
@@ -128,24 +129,7 @@ km.iterate <- function(df, k){
     glist[[length(glist)+1]] <- base.cent # add to ggplot list
     
   }
-    
+  
   return(glist)
-
+  
 }
-
-x1 <- c(1,1,0,5,6,4)
-x2 <- c(4,3,4,1,2,0)
-
-t <- data.frame(x1,x2)
-
-
-g <- km.iterate(t,2)
-
-mt <- mtcars %>% select(mpg,disp)
-
-g2 <- km.iterate(mt,4)
-
-mtcars <- mtcars
-a <- km.iterate(mtcars,3)
-
-
