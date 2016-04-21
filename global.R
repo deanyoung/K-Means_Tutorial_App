@@ -2,9 +2,9 @@ library(dplyr)
 library(ggplot2)
 library(shiny)
 
-current.iter <- 0
-current.step <- "a"
-counter <- 1
+# current.iter <- 0
+# current.step <- "a"
+# counter <- 1
 
 
 df.check <- function(df){
