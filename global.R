@@ -7,10 +7,6 @@ current.step <- "a"
 counter <- 1
 
 
-mt <- mtcars %>% select(mpg,disp)
-
-
-
 df.check <- function(df){
   
   if(TRUE %in% is.na(df)){
@@ -49,7 +45,7 @@ km.init <- function(df,k,seed=76){
 km.ggplot <- function(df, xlab, ylab, reg.size=5){
   
   p <- ggplot(data=df, aes(x=x1,y=x2,col=cluster)) + geom_point(size=reg.size) +
-    xlab(xlab) + ylab(ylab)
+    xlab(xlab) + ylab(ylab) + ggtitle("K-Means")
   
   return(p)
   

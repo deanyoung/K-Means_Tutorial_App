@@ -5,17 +5,21 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       h3(strong("Options")),
+      selectizeInput('df', 'Select Dataset', choices = c("mtcars","iris")),
+      uiOutput('var'),
       sliderInput("k", "Select K", min = 1, 
                   max = 10, value = 3),
-      actionButton("forward","Step Forward"),
-      actionButton("backward","Step Backward")
+      actionButton("backward","Step Backward"),
+      actionButton("forward","Step Forward")
+      
       
     ),
     
     mainPanel(
       plotOutput("graph"),
       textOutput("status"),
-      textOutput("max")
+      textOutput("max"),
+      textOutput("desc")
     )
   
   )
