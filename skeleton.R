@@ -55,14 +55,12 @@ km.centroid <- function(df){
 
 km.euclid <- function(df,centroid){
   
-  df <- df %>% select(x1,x2,cluster)
   
-  for(x in centroid$cluster){
+  for(i in 1:nrow(centroid)){
     
-    x.str <- as.character(x)
+    i.str <- as.character(i)
     
-    df[,x.str] <- sqrt(((df$x1 - as.numeric(centroid[centroid$cluster==x.str,2]))^2) + 
-                         ((df$x2 - as.numeric(centroid[centroid$cluster==x.str,3]))^2))
+    df[,i.str] <- sqrt(((df$x1 - centroid[[i,2]])^2) + ((df$x2 - centroid[[i,3]])^2))
   }
   
   return(df)
@@ -78,11 +76,11 @@ km.reassign <- function(df){
     
     min <- Inf
     
-    for(x in colnames(temp.df)){
+    for(j in 1:ncol(temp.df)){
       
-      if(temp.df[i,x] < min){
-        min <- temp.df[i,x]
-        new.cluster[i] <- x
+      if(temp.df[i,j] < min){
+        min <- temp.df[i,j]
+        new.cluster[i] <- j
         
       }
       
@@ -135,47 +133,19 @@ km.iterate <- function(df, k){
 
 }
 
-# x1 <- c(1,1,0,5,6,4)
-# x2 <- c(4,3,4,1,2,0)
-# 
-# t <- data.frame(x1,x2)
-# 
-# 
-# g <- km.iterate(t,2)
-# 
-# mt <- mtcars %>% select(mpg,disp)
-# 
-# g2 <- km.iterate(mt,4)
-# 
-# mtcars <- mtcars
-# a <- km.iterate(mtcars,3)
+x1 <- c(1,1,0,5,6,4)
+x2 <- c(4,3,4,1,2,0)
 
-ir <- iris %>% select(Sepal.Length, Petal.Length)
-test <- km.iterate(ir,3)
+t <- data.frame(x1,x2)
 
-# glist <- list()
-# df <- km.init(ir,3)
-# 
-# orig.colnames <- colnames(df)
-# colnames(df) <- c("x1","x2","cluster") # reassign variable names to be abstract enough for functions to recognize
-# 
-# base <- km.ggplot(df,orig.colnames[1],orig.colnames[2])
-# glist[[length(glist)+1]] <- base
-# 
-# prev.cluster <- c()
-# 
-# prev.cluster <- df$cluster # store previous cluster
-# 
-# centroid <- km.centroid(df) # compute centroid
-# gg.cent <- geom_point(data=centroid, aes(x=x1.c,y=x2.c,fill=cluster), size=20, shape=13) # layer for centroid
-# 
-# base.cent <- base + gg.cent # plot clusters + new centroid
-# 
-# glist[[length(glist)+1]] <- base.cent # add to ggplot list
-# 
-# df <- km.euclid(df,centroid) %>% km.reassign() # compute euclidean dist. and reassign clusters
-# 
-# base <- km.ggplot(df,orig.colnames[1],orig.colnames[2]) # reassigned clusters, new base
-# base.cent <- base + gg.cent # plot with old centroid
-# 
-# glist[[length(glist)+1]] <- base.cent # add to ggplot list
+
+g <- km.iterate(t,2)
+
+mt <- mtcars %>% select(mpg,disp)
+
+g2 <- km.iterate(mt,4)
+
+mtcars <- mtcars
+a <- km.iterate(mtcars,3)
+
+
