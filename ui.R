@@ -9,7 +9,6 @@ shinyUI(fluidPage(
       uiOutput('var'),
       sliderInput("k", "Select K", min = 1, 
                   max = 10, value = 3),
-      actionButton("run", "Run"),
       h3(strong("Step Through")),
       actionButton("backward","Step Backward"),
       actionButton("forward","Step Forward")
