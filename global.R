@@ -2,6 +2,15 @@ library(dplyr)
 library(ggplot2)
 library(shiny)
 
+current.iter <- 0
+current.step <- "a"
+counter <- 1
+
+
+mt <- mtcars %>% select(mpg,disp)
+
+
+
 df.check <- function(df){
   
   if(TRUE %in% is.na(df)){
@@ -133,3 +142,4 @@ km.iterate <- function(df, k){
   return(glist)
   
 }
+
