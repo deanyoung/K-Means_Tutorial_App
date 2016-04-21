@@ -55,12 +55,14 @@ km.centroid <- function(df){
 
 km.euclid <- function(df,centroid){
   
+  df <- df %>% select(x1,x2,cluster)
   
-  for(i in 1:nrow(centroid)){
+  for(x in centroid$cluster){
     
-    i.str <- as.character(i)
+    x.str <- as.character(x)
     
-    df[,i.str] <- sqrt(((df$x1 - centroid[[i,2]])^2) + ((df$x2 - centroid[[i,3]])^2))
+    df[,x.str] <- sqrt(((df$x1 - as.numeric(centroid[centroid$cluster==x.str,2]))^2) + 
+                         ((df$x2 - as.numeric(centroid[centroid$cluster==x.str,3]))^2))
   }
   
   return(df)
@@ -76,11 +78,11 @@ km.reassign <- function(df){
     
     min <- Inf
     
-    for(j in 1:ncol(temp.df)){
+    for(x in colnames(temp.df)){
       
-      if(temp.df[i,j] < min){
-        min <- temp.df[i,j]
-        new.cluster[i] <- j
+      if(temp.df[i,x] < min){
+        min <- temp.df[i,x]
+        new.cluster[i] <- x
         
       }
       
@@ -133,19 +135,22 @@ km.iterate <- function(df, k){
 
 }
 
-x1 <- c(1,1,0,5,6,4)
-x2 <- c(4,3,4,1,2,0)
+# x1 <- c(1,1,0,5,6,4)
+# x2 <- c(4,3,4,1,2,0)
+# 
+# t <- data.frame(x1,x2)
+# 
+# 
+# g <- km.iterate(t,2)
+# 
+# mt <- mtcars %>% select(mpg,disp)
+# 
+# g2 <- km.iterate(mt,4)
+# 
+# mtcars <- mtcars
+# a <- km.iterate(mtcars,3)
 
-t <- data.frame(x1,x2)
-
-
-g <- km.iterate(t,2)
-
-mt <- mtcars %>% select(mpg,disp)
-
-g2 <- km.iterate(mt,4)
-
-mtcars <- mtcars
-a <- km.iterate(mtcars,3)
+ir <- iris %>% select(Sepal.Length,Petal.Length)
+test <- km.iterate(ir,3)
 
 
