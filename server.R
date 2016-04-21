@@ -25,9 +25,23 @@ shinyServer(function(input, output) {
     
   })
   
+  stop.cond <- reactive({
+    
+    if(length(input$var) != 2){
+      
+      TRUE
+      
+    }else{
+      
+      FALSE
+      
+    }
+    
+  })
+  
   glist <- reactive({
     
-    if(length(input$var) == 2){
+    if(stop.cond() == FALSE){
       km.iterate(df(),input$k)
       
     }else{
@@ -40,8 +54,13 @@ shinyServer(function(input, output) {
   
   output$max <- renderText({
     
-    paste("Total iterations:", as.character((length(glist()) - 1)/2))
-    
+    if(stop.cond() == FALSE){
+      paste("Total iterations:", as.character((length(glist()) - 1)/2))
+    }else{
+      
+      ""
+      
+    }
   })
   
   output$graph <- renderPlot({
@@ -52,14 +71,24 @@ shinyServer(function(input, output) {
   
   output$status <- renderText({
       
-    "Current iteration: Initial random assignment"
-
+    if(stop.cond() == FALSE){  
+      "Current iteration: Initial random assignment"
+    }else{
+      
+      ""
+      
+    }
   })
     
   output$desc <- renderText({
 
-    "Randomly assign observations to clusters with equal probability"
-
+    if(stop.cond() == FALSE){
+      "Randomly assign observations to clusters with equal probability"
+    }else{
+     
+      "" 
+      
+    }
     
   })
   
