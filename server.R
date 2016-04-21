@@ -55,7 +55,9 @@ shinyServer(function(input, output) {
   output$max <- renderText({
     
     if(stop.cond() == FALSE){
+      
       paste("Total iterations:", as.character((length(glist()) - 1)/2))
+      
     }else{
       
       ""
@@ -94,81 +96,85 @@ shinyServer(function(input, output) {
   
   observeEvent(input$forward,{
     
-    if(counter < length(glist())){
-      counter <<- counter + 1
-      
-      if(current.iter==0){
-        current.iter <<- 1
-        current.step <<- "a"
+    if(stop.cond()==FALSE){
+    
+      if(counter < length(glist())){
+        counter <<- counter + 1
         
-        
-      }else{
-        
-        if(current.step=="a"){
-          current.step <<- "b"
-        }else{
+        if(current.iter==0){
+          current.iter <<- 1
           current.step <<- "a"
-          current.iter <<- current.iter + 1
           
-        }
-        
-        
-      }
-      
-      
-    }
-    
-    output$graph <- renderPlot({
-      
-      glist()[counter]
-      
-    })
-    
-    output$status <- renderText({
-      
-      if(current.iter==0){
-        
-        "Current iteration: Initial random assignment"
-        
-      }else{
-        
-        paste("Current iteration:", current.iter, "Step:", current.step)
-        
-      }
-      
-    })
-    
-    output$desc <- renderText({
-      
-      if(current.iter==0){
-        
-        "Randomly assign observations to clusters with equal probability"
-        
-      }else{
-        
-        if(current.step=="a"){
-          
-          "(Re)compute the centroids"
           
         }else{
           
-          if(current.iter==(length(glist())-1)/2){
-            
-            "(Re)assign the observations to cluster based on nearest centroid. No change in cluster assignments.
-            Stopping condition met. K-means algorithm is now finished."
-            
+          if(current.step=="a"){
+            current.step <<- "b"
           }else{
-          
-            "(Re)assign the observations to cluster based on nearest centroid"
+            current.step <<- "a"
+            current.iter <<- current.iter + 1
             
           }
           
+          
         }
         
         
       }
       
-    })
+      output$graph <- renderPlot({
+        
+        glist()[counter]
+        
+      })
+      
+      output$status <- renderText({
+        
+        if(current.iter==0){
+          
+          "Current iteration: Initial random assignment"
+          
+        }else{
+          
+          paste("Current iteration:", current.iter, "Step:", current.step)
+          
+        }
+        
+      })
+      
+      output$desc <- renderText({
+        
+        if(current.iter==0){
+          
+          "Randomly assign observations to clusters with equal probability"
+          
+        }else{
+          
+          if(current.step=="a"){
+            
+            "(Re)compute the centroids"
+            
+          }else{
+            
+            if(current.iter==(length(glist())-1)/2){
+              
+              "(Re)assign the observations to cluster based on nearest centroid. No change in cluster assignments.
+              Stopping condition met. K-means algorithm is now finished."
+              
+            }else{
+            
+              "(Re)assign the observations to cluster based on nearest centroid"
+              
+            }
+            
+          }
+          
+          
+        }
+        
+      })
+      
+    }
     
   })
     
@@ -176,85 +182,87 @@ shinyServer(function(input, output) {
   
   observeEvent(input$backward,{
     
-    if(counter > 1){
-      counter <<- counter - 1
-      
-      if(current.iter <= 1 & current.step=="a"){
+    if(stop.cond()==FALSE){  
+    
+      if(counter > 1){
+        counter <<- counter - 1
         
-        current.iter <<- 0
-  
-      }else{
-        
-        if(current.step=="a"){
+        if(current.iter <= 1 & current.step=="a"){
           
-          current.step <<- "b"
-          current.iter <<- current.iter - 1
-          
+          current.iter <<- 0
+    
         }else{
-          current.step <<- "a"
           
-
+          if(current.step=="a"){
+            
+            current.step <<- "b"
+            current.iter <<- current.iter - 1
+            
+          }else{
+            current.step <<- "a"
+            
+  
+          }
+          
+          
         }
         
         
       }
       
+      output$graph <- renderPlot({
+        
+        glist()[counter]
+        
+      })
       
-    }
-    
-    output$graph <- renderPlot({
-      
-      glist()[counter]
-      
-    })
-    
-    output$status <- renderText({
-      
-      if(current.iter==0){
+      output$status <- renderText({
         
-        "Current iteration: Initial random assignment"
-        
-      }else{
-        
-        paste("Current iteration:", current.iter, "Step:", current.step)
-        
-      }
-      
-    })
-    
-    output$desc <- renderText({
-      
-      if(current.iter==0){
-        
-        "Randomly assign observations to clusters with equal probability"
-        
-      }else{
-        
-        if(current.step=="a"){
+        if(current.iter==0){
           
-          "(Re)compute the centroids"
+          "Current iteration: Initial random assignment"
           
         }else{
           
-          if(current.iter==(length(glist())-1)/2){
+          paste("Current iteration:", current.iter, "Step:", current.step)
+          
+        }
+        
+      })
+      
+      output$desc <- renderText({
+        
+        if(current.iter==0){
+          
+          "Randomly assign observations to clusters with equal probability"
+          
+        }else{
+          
+          if(current.step=="a"){
             
-            "(Re)assign the observations to cluster based on nearest centroid. No change in cluster assignments.
-            Stopping condition met. K-means algorithm is now finished."
+            "(Re)compute the centroids"
             
           }else{
             
-            "(Re)assign the observations to cluster based on nearest centroid"
+            if(current.iter==(length(glist())-1)/2){
+              
+              "(Re)assign the observations to cluster based on nearest centroid. No change in cluster assignments.
+              Stopping condition met. K-means algorithm is now finished."
+              
+            }else{
+              
+              "(Re)assign the observations to cluster based on nearest centroid"
+              
+            }
             
           }
           
+          
         }
         
-        
-      }
-      
-    })
+      })
   
-  
+    }
   
   
 })
