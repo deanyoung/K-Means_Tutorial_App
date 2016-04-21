@@ -1,5 +1,11 @@
 shinyServer(function(input, output) {
   
+  values <- reactiveValues()
+  
+  values$current.iter <- 0
+  values$current.step <- "a"
+  values$counter <- 1
+  
   idf <- reactive({
     
     switch(input$df,
@@ -7,7 +13,7 @@ shinyServer(function(input, output) {
            "iris"={idf <- iris}
            
            
-           )
+    )
     
   })
   
@@ -42,6 +48,11 @@ shinyServer(function(input, output) {
   glist <- reactive({
     
     if(stop.cond() == FALSE){
+      
+      values$current.iter <- 0
+      values$current.step <- "a"
+      values$counter <- 1
+      
       km.iterate(df(),input$k)
       
     }else{
@@ -67,12 +78,12 @@ shinyServer(function(input, output) {
   
   output$graph <- renderPlot({
     
-    glist()[counter]
+    glist()[values$counter]
     
   })
   
   output$status <- renderText({
-      
+    
     if(stop.cond() == FALSE){  
       "Current iteration: Initial random assignment"
     }else{
@@ -81,13 +92,13 @@ shinyServer(function(input, output) {
       
     }
   })
-    
+  
   output$desc <- renderText({
-
+    
     if(stop.cond() == FALSE){
       "Randomly assign observations to clusters with equal probability"
     }else{
-     
+      
       "" 
       
     }
@@ -97,22 +108,22 @@ shinyServer(function(input, output) {
   observeEvent(input$forward,{
     
     if(stop.cond()==FALSE){
-    
-      if(counter < length(glist())){
-        counter <<- counter + 1
+      
+      if(values$counter < length(glist())){
+        values$counter <- values$counter + 1
         
-        if(current.iter==0){
-          current.iter <<- 1
-          current.step <<- "a"
+        if(values$current.iter==0){
+          values$current.iter <- 1
+          values$current.step <- "a"
           
           
         }else{
           
-          if(current.step=="a"){
-            current.step <<- "b"
+          if(values$current.step=="a"){
+            values$current.step <- "b"
           }else{
-            current.step <<- "a"
-            current.iter <<- current.iter + 1
+            values$current.step <- "a"
+            values$current.iter <- values$current.iter + 1
             
           }
           
@@ -124,19 +135,19 @@ shinyServer(function(input, output) {
       
       output$graph <- renderPlot({
         
-        glist()[counter]
+        glist()[values$counter]
         
       })
       
       output$status <- renderText({
         
-        if(current.iter==0){
+        if(values$current.iter==0){
           
           "Current iteration: Initial random assignment"
           
         }else{
           
-          paste("Current iteration:", current.iter, "Step:", current.step)
+          paste("Current iteration:", values$current.iter, "Step:", values$current.step)
           
         }
         
@@ -144,25 +155,25 @@ shinyServer(function(input, output) {
       
       output$desc <- renderText({
         
-        if(current.iter==0){
+        if(values$current.iter==0){
           
           "Randomly assign observations to clusters with equal probability"
           
         }else{
           
-          if(current.step=="a"){
+          if(values$current.step=="a"){
             
             "(Re)compute the centroids"
             
           }else{
             
-            if(current.iter==(length(glist())-1)/2){
+            if(values$current.iter==(length(glist())-1)/2){
               
               "(Re)assign the observations to cluster based on nearest centroid. No change in cluster assignments.
               Stopping condition met. K-means algorithm is now finished."
               
             }else{
-            
+              
               "(Re)assign the observations to cluster based on nearest centroid"
               
             }
@@ -177,31 +188,31 @@ shinyServer(function(input, output) {
     }
     
   })
-    
-    
+  
+  
   
   observeEvent(input$backward,{
     
     if(stop.cond()==FALSE){  
-    
-      if(counter > 1){
-        counter <<- counter - 1
+      
+      if(values$counter > 1){
+        values$counter <- values$counter - 1
         
-        if(current.iter <= 1 & current.step=="a"){
+        if(values$current.iter <= 1 & values$current.step=="a"){
           
-          current.iter <<- 0
-    
+          values$current.iter <- 0
+          
         }else{
           
-          if(current.step=="a"){
+          if(values$current.step=="a"){
             
-            current.step <<- "b"
-            current.iter <<- current.iter - 1
+            values$current.step <- "b"
+            values$current.iter <- values$current.iter - 1
             
           }else{
-            current.step <<- "a"
+            values$current.step <- "a"
             
-  
+            
           }
           
           
@@ -212,19 +223,19 @@ shinyServer(function(input, output) {
       
       output$graph <- renderPlot({
         
-        glist()[counter]
+        glist()[values$counter]
         
       })
       
       output$status <- renderText({
         
-        if(current.iter==0){
+        if(values$current.iter==0){
           
           "Current iteration: Initial random assignment"
           
         }else{
           
-          paste("Current iteration:", current.iter, "Step:", current.step)
+          paste("Current iteration:", values$current.iter, "Step:", values$current.step)
           
         }
         
@@ -232,19 +243,19 @@ shinyServer(function(input, output) {
       
       output$desc <- renderText({
         
-        if(current.iter==0){
+        if(values$current.iter==0){
           
           "Randomly assign observations to clusters with equal probability"
           
         }else{
           
-          if(current.step=="a"){
+          if(values$current.step=="a"){
             
             "(Re)compute the centroids"
             
           }else{
             
-            if(current.iter==(length(glist())-1)/2){
+            if(values$current.iter==(length(glist())-1)/2){
               
               "(Re)assign the observations to cluster based on nearest centroid. No change in cluster assignments.
               Stopping condition met. K-means algorithm is now finished."
@@ -261,10 +272,10 @@ shinyServer(function(input, output) {
         }
         
       })
-  
+      
     }
+    
+    
+  })
   
-  
-})
-  
-})
+  })
