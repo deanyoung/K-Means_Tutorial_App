@@ -1,6 +1,9 @@
 shinyUI(fluidPage(
   
   h1(strong("K-Means Tutorial App"), align="center"),
+  p("Developed by Dean Young (deanyoung168@gmail.com)"),
+  "Reference material: ",
+  tags$a(href="http://www-bcf.usc.edu/~gareth/ISL/", "http://www-bcf.usc.edu/~gareth/ISL/"),
   
   sidebarLayout(
     sidebarPanel(
@@ -9,7 +12,6 @@ shinyUI(fluidPage(
       uiOutput('var'),
       sliderInput("k", "Select K", min = 1, 
                   max = 10, value = 3),
-      actionButton("run", "Run"),
       h3(strong("Step Through")),
       actionButton("backward","Step Backward"),
       actionButton("forward","Step Forward")
@@ -22,6 +24,7 @@ shinyUI(fluidPage(
       textOutput("status"),
       textOutput("max"),
       textOutput("desc")
+      
     )
   
   )
