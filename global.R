@@ -122,7 +122,7 @@ km.iterate <- function(df, k){
     prev.cluster <- df$cluster # store previous cluster
     
     centroid <- km.centroid(df) # compute centroid
-    gg.cent <- geom_point(data=centroid, aes(x=x1.c,y=x2.c,fill=cluster), size=20, shape=13) # layer for centroid
+    gg.cent <- geom_point(data=centroid, aes(x=x1.c,y=x2.c,fill=cluster), size=20, shape=13, show.legend = FALSE) # layer for centroid
     
     base.cent <- base + gg.cent # plot clusters + new centroid
     
