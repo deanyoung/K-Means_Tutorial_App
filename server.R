@@ -8,12 +8,52 @@ shinyServer(function(input, output) {
   
   idf <- reactive({
     
-    switch(input$df,
-           "mtcars"={idf <- mtcars},
-           "iris"={idf <- iris}
-           
-           
-    )
+    if(input$datasrc == FALSE){
+      switch(input$df,
+             "mtcars"={idf <- mtcars},
+             "iris"={idf <- iris}
+             
+             
+      )
+    }else{
+      
+      inFile <- input$file1
+      
+      if (is.null(inFile))
+        return(NULL)
+      
+      read.csv(inFile$datapath, header=input$header, sep=input$sep, quote=input$quote)
+      
+    }
+    
+  })
+  
+  output$datain <- renderUI({
+    
+    if(input$datasrc == FALSE){
+      
+      selectizeInput('df', 'Select Dataset', choices = c("mtcars","iris"))
+      
+    }else{
+      
+      tagList(
+        fileInput('file1', 'Choose CSV File',
+                  accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
+        tags$hr(),
+        checkboxInput('header', 'Header', TRUE),
+        radioButtons('sep', 'Separator',
+                     choices=list('Comma' = ',',
+                       'Semicolon' = ';',
+                       'Tab' = '\t'),
+                     selected = ','),
+        radioButtons('quote', 'Quote',
+                     choices=list('None'='',
+                       'Double Quote'='"',
+                       'Single Quote'="'"),
+                    selected = '"')
+      )
+      
+    }
     
   })
   

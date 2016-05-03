@@ -29,8 +29,9 @@ shinyUI(fluidPage(
         
       h3(strong("Options"), align="center"),
       
-      selectizeInput('df', 'Select Dataset', choices = c("mtcars","iris")),
+      uiOutput('datain'),
       uiOutput('var'),
+      checkboxInput('datasrc','Upload Custom Data (csv)', value=FALSE),
       sliderInput("k", "Select K", min = 1, 
                   max = 10, value = 3),
       
