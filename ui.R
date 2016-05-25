@@ -34,7 +34,10 @@ shinyUI(fluidPage(
       checkboxInput('datasrc','Upload Custom Data (csv)', value=FALSE),
       sliderInput("k", "Select K", min = 1, 
                   max = 10, value = 3),
-      
+      tags$div(title="Different seed values change the initial cluster assignments which changes the
+               final cluster assignments.",
+        numericInput('seed','Select Seed Value (1-100)',76,min=0,max=100,step=1)
+        ),
       h3(strong("Step Through"), align="center"),
       actionButton("backward","Step Backward"),
       actionButton("forward","Step Forward")

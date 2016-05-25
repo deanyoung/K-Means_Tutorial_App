@@ -93,7 +93,7 @@ shinyServer(function(input, output) {
       values$current.step <- "a"
       values$counter <- 1
       
-      km.iterate(df(),input$k)
+      km.iterate(df(),input$k,input$seed)
       
     }else{
       

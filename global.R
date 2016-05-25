@@ -28,7 +28,7 @@ df.check <- function(df){
   
 }
 
-km.init <- function(df,k,seed=76){
+km.init <- function(df,k,seed){
   
   samp.vec <- c(seq(1,k,1))
   
@@ -102,12 +102,12 @@ km.reassign <- function(df){
   
 }
 
-km.iterate <- function(df, k){
+km.iterate <- function(df, k, seed=76){
   
   df.check(df)
   
   glist <- list()
-  df <- km.init(df,k)
+  df <- km.init(df,k,seed)
   
   orig.colnames <- colnames(df)
   colnames(df) <- c("x1","x2","cluster") # reassign variable names to be abstract enough for functions to recognize
