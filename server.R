@@ -93,7 +93,11 @@ shinyServer(function(input, output) {
       values$current.step <- "a"
       values$counter <- 1
       
-      km.iterate(df(),input$k,input$seed)
+      values$kmlist <- km.iterate(df(),input$k,input$seed)
+      values$isovec <- values$kmlist[[2]]
+      
+      values$kmlist[[1]]
+      
       
     }else{
       
@@ -147,6 +151,12 @@ shinyServer(function(input, output) {
   
   observeEvent(input$forward,{
     
+    output$isowarn <- renderText({
+      
+      ""
+      
+    })
+    
     if(stop.cond()==FALSE){
       
       if(values$counter < length(glist())){
@@ -161,6 +171,23 @@ shinyServer(function(input, output) {
           
           if(values$current.step=="a"){
             values$current.step <- "b"
+            
+            if(values$current.iter %in% values$isovec){
+              
+              output$isowarn <- renderText({
+                
+                "Warning: One or more centroids have been isolated at this step 
+                (it was not the nearest neighbor for any data point). The algorithm
+                will proceed with less clusters than specified."
+                
+              })
+              
+            }else{
+              
+              ""
+              
+            }
+            
           }else{
             values$current.step <- "a"
             values$current.iter <- values$current.iter + 1
@@ -233,6 +260,12 @@ shinyServer(function(input, output) {
   
   observeEvent(input$backward,{
     
+    output$isowarn <- renderText({
+      
+      ""
+      
+    })
+    
     if(stop.cond()==FALSE){  
       
       if(values$counter > 1){
@@ -248,6 +281,22 @@ shinyServer(function(input, output) {
             
             values$current.step <- "b"
             values$current.iter <- values$current.iter - 1
+            
+            if(values$current.iter %in% values$isovec){
+              
+              output$isowarn <- renderText({
+                
+                "Warning: One or more centroids have been isolated at this step 
+                (it was not the nearest neighbor for any data point). The algorithm
+                will proceed with less clusters than specified."
+                
+              })
+              
+            }else{
+              
+              ""
+              
+            }
             
           }else{
             values$current.step <- "a"

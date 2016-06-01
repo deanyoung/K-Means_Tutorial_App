@@ -102,7 +102,7 @@ km.reassign <- function(df){
   
 }
 
-km.iterate <- function(df, k, seed=76){
+km.iterate <- function(df, k, seed){
   
   df.check(df)
   
@@ -115,14 +115,18 @@ km.iterate <- function(df, k, seed=76){
   base <- km.ggplot(df,orig.colnames[1],orig.colnames[2])
   glist[[length(glist)+1]] <- base
   
+  count <- 0
+  
   prev.cluster <- c()
+  
+  vec <- c()
   
   while (isTRUE(all.equal(prev.cluster,df$cluster)) == FALSE){
     
     prev.cluster <- df$cluster # store previous cluster
     
     centroid <- km.centroid(df) # compute centroid
-    gg.cent <- geom_point(data=centroid, aes(x=x1.c,y=x2.c,fill=cluster), size=20, shape=13, show.legend = FALSE) # layer for centroid
+    gg.cent <- geom_point(data=centroid, aes(x=x1.c,y=x2.c,fill=cluster), size=20, shape=13) # layer for centroid
     
     base.cent <- base + gg.cent # plot clusters + new centroid
     
@@ -135,9 +139,20 @@ km.iterate <- function(df, k, seed=76){
     
     glist[[length(glist)+1]] <- base.cent # add to ggplot list
     
+    count <- count + 1
+    
+    # check if a centroid has been "isolated" from all data points
+    if(base$data$cluster %>% levels() %>% length() < gg.cent$data$cluster %>% levels() %>% length()){
+      
+      vec <- append(vec,count) # take note of step if so
+      
+    }
+    
   }
   
-  return(glist)
+  final.list <- list(glist,vec)
+  
+  return(final.list)
   
 }
 

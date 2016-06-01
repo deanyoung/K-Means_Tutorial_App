@@ -50,7 +50,8 @@ shinyUI(fluidPage(
       plotOutput("graph"),
       textOutput("status"),
       textOutput("max"),
-      textOutput("desc")
+      textOutput("desc"),
+      div(textOutput("isowarn"),style="color:red")
       
     )
   

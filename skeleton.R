@@ -96,12 +96,12 @@ km.reassign <- function(df){
   
 }
 
-km.iterate <- function(df, k){
+km.iterate <- function(df, k, seed){
   
   df.check(df)
   
   glist <- list()
-  df <- km.init(df,k)
+  df <- km.init(df,k,seed)
   
   orig.colnames <- colnames(df)
   colnames(df) <- c("x1","x2","cluster") # reassign variable names to be abstract enough for functions to recognize
@@ -109,7 +109,11 @@ km.iterate <- function(df, k){
   base <- km.ggplot(df,orig.colnames[1],orig.colnames[2])
   glist[[length(glist)+1]] <- base
   
+  count <- 0
+  
   prev.cluster <- c()
+  
+  vec <- c()
   
   while (isTRUE(all.equal(prev.cluster,df$cluster)) == FALSE){
   
@@ -129,9 +133,20 @@ km.iterate <- function(df, k){
     
     glist[[length(glist)+1]] <- base.cent # add to ggplot list
     
-  }
+    count <- count + 1
     
-  return(glist)
+    # check if a centroid has been "isolated" from all data points
+    if(base$data$cluster %>% levels() %>% length() < gg.cent$data$cluster %>% levels() %>% length()){
+      
+      vec <- append(vec,count) # take note of step if so
+      
+    }
+    
+  }
+  
+  final.list <- list(glist,vec)
+    
+  return(final.list)
 
 }
 
@@ -151,6 +166,10 @@ km.iterate <- function(df, k){
 # a <- km.iterate(mtcars,3)
 
 ir <- iris %>% select(Sepal.Length,Petal.Length)
-test <- km.iterate(ir,3)
+vec <- c()
+test <- km.iterate(ir,3, 76)
+ggp <- test[[1]]
+vec <- test[[2]]
+
 
 
