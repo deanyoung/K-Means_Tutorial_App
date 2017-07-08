@@ -47,7 +47,7 @@ shinyUI(fluidPage(
     
     mainPanel(
       list(tags$head(tags$style("body {background-color: #ADD8E6; }"))),
-      plotOutput("graph"),
+      plotOutput("graph", width=600, height=600),
       textOutput("status"),
       textOutput("max"),
       textOutput("desc"),

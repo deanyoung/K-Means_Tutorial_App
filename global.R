@@ -45,7 +45,12 @@ km.init <- function(df,k,seed){
 km.ggplot <- function(df, xlab, ylab, reg.size=5){
   
   p <- ggplot(data=df, aes(x=x1,y=x2,col=cluster)) + geom_point(size=reg.size) +
-    xlab(xlab) + ylab(ylab) + ggtitle("K-Means")
+    xlab(xlab) + ylab(ylab) + ggtitle("K-Means") +
+    scale_x_continuous(breaks=seq(-3,3,1)) +
+    scale_y_continuous(breaks=seq(-3,3,1)) +
+    coord_cartesian(xlim = c(-3, 3), ylim=c(-3,3)) +
+    theme(aspect.ratio = 1)
+  
   
   return(p)
   
@@ -105,6 +110,8 @@ km.reassign <- function(df){
 km.iterate <- function(df, k, seed){
   
   df.check(df)
+  
+  df <- scale(df) %>% as.data.frame() # standardize variables to z-score
   
   glist <- list()
   df <- km.init(df,k,seed)
